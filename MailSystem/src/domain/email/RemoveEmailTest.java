@@ -3,6 +3,7 @@ package domain.email;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ class RemoveEmailTest {
 	void setUp() {
 		user = new User("Alice", "Wonder", LocalDate.of(1995, 7, 20), "alicewonder", "wonderPass".toCharArray());
 		email = new Email(user,new User("Bob", "Marley", LocalDate.of(1990, 6, 1), "bobmarley", "bobPass".toCharArray()),
-				"Trash Test Subject", "This email will go to trash.", LocalDate.now());
+				"Trash Test Subject", "This email will go to trash.", LocalDateTime.now());
 	}
 
 	@Test

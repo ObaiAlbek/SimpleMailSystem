@@ -7,6 +7,7 @@ public class UserEmail {
 	private static int counter = 1000;
 	private int accountID;
 	private String username;
+	private boolean status;
 	private char[] password;
 	private SentFolder sentFolder;
 	private TrashFolder trashFolder;
@@ -16,6 +17,7 @@ public class UserEmail {
 		this.username = username;
 		this.password = password;
 		this.accountID = counter++;
+		this.status = true;
 		this.sentFolder = new SentFolder();
 		this.trashFolder = new TrashFolder();
 		this.inbox = new Inbox();
@@ -47,6 +49,18 @@ public class UserEmail {
 	
 	public Inbox getInbox() {
 		return inbox;
+	}
+	
+	public boolean getStatus() {
+		return status;
+	}
+	
+	public void  signIn() {
+		this.status = true;
+	}
+	
+	public void signUp() {
+		this.status = false;
 	}
 	
 }

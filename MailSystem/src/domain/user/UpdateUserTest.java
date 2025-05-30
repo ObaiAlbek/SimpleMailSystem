@@ -17,14 +17,14 @@ class UpdateUserTest {
 
     @Test
     void testUpdateUserSuccessfully() throws Exception {
-        boolean updated = userManager.updateUser(
+        User updated = userManager.updateUser(
             "johndoe@easymail.de", 
             "Johnny", 
             "Doeman", 
             "newpass123".toCharArray(), 
             "newpass123".toCharArray()
         );
-        assertTrue(updated);
+        assertNull(updated);
         
         User updatedUser = userManager.getUserByUsername("johndoe@easymail.de");
         assertEquals("Johnny", updatedUser.getFirstname());

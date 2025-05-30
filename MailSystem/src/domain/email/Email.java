@@ -1,6 +1,5 @@
 package domain.email;
-
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import domain.user.*;
 
@@ -9,9 +8,9 @@ public class Email {
 	private User receiver;
 	private String subject;
 	private String content;
-	private LocalDate date;
+	private LocalDateTime date;
 	
-	public Email(User sender, User receiver, String subject, String content, LocalDate date) {
+	public Email(User sender, User receiver, String subject, String content, LocalDateTime date) {
 		this.sender = sender;
 		this.receiver = receiver;
 		this.subject = subject;
@@ -31,7 +30,7 @@ public class Email {
 	public String getContent() {
 		return content;
 	}
-	public LocalDate getDate() {
+	public LocalDateTime getDate() {
 		return date;
 	}
 

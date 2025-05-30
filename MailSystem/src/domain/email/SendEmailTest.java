@@ -1,12 +1,10 @@
 package domain.email;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDate;
-
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import domain.*;
 import domain.email.EmailNotFoundException;
 import domain.user.User;
@@ -24,7 +22,7 @@ class SendEmailTest {
 
 	@Test
 	void testAddEmailToSentFolder() {
-		Email email = new Email(sender, receiver, "Test Subject", "This is a test email content.", LocalDate.now());
+		Email email = new Email(sender, receiver, "Test Subject", "This is a test email content.", LocalDateTime.now());
 		boolean added = sender.getUsermail().getSentFolder().addEmail(email);
 
 		assertTrue(added); 
@@ -33,7 +31,7 @@ class SendEmailTest {
 	
 	@Test
 	void testRemoveEmailFromSentFolder() throws EmailNotFoundException {
-		Email email = new Email(sender, receiver, "Test Subject", "This is a test email content.", LocalDate.now());
+		Email email = new Email(sender, receiver, "Test Subject", "This is a test email content.", LocalDateTime.now());
 		boolean added = sender.getUsermail().getSentFolder().addEmail(email);
 	
 		assertTrue(added); 

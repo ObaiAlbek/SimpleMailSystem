@@ -68,7 +68,7 @@ class AddUserTest {
 
     @Test
     void testErfolgreichHinzufuegen() throws Exception {
-        boolean result = userManager.addUser("Anna", "Beispiel","anna",1995, 15, "Mai", new char[]{'1'}, new char[]{'1'});
-        assertTrue(result);
+        User result = userManager.addUser("Anna", "Beispiel","anna",1995, 15, "Mai", new char[]{'1'}, new char[]{'1'});
+        assertNotNull(result);
     }
 }

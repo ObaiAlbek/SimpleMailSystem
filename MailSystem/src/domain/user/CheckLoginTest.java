@@ -17,17 +17,17 @@ class CheckLoginTest {
     }
 
     @Test
-    void testLoginMitKorrektenDaten() {
-        assertTrue(userManager.checkLogin("ali.test@easymail.de", new char[]{'1','2','3','4'}));
+    void testLoginMitKorrektenDaten() throws Exception {
+        assertNotNull(userManager.checkLogin("ali.test@easymail.de", new char[]{'1','2','3','4'}));
     }
 
     @Test
-    void testLoginMitFalschemPasswort() {
-        assertFalse(userManager.checkLogin("ali.test@easymail.de", new char[]{'1','1','1','1'}));
+    void testLoginMitFalschemPasswort() throws Exception {
+    	assertNull(userManager.checkLogin("ali.test@easymail.de", new char[]{'1','1','1','1'}));
     }
 
     @Test
-    void testLoginMitFalschemNutzername() {
-        assertFalse(userManager.checkLogin("nicht.vorhanden@easymail.de", new char[]{'1','2','3','4'}));
+    void testLoginMitFalschemNutzername() throws Exception {
+    	assertNull(userManager.checkLogin("nicht.vorhanden@easymail.de", new char[]{'1','2','3','4'}));
     }
 }
