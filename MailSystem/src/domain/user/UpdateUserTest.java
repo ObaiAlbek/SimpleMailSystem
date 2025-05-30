@@ -1,14 +1,9 @@
-package domain.unitTest;
+package domain.user;
 
 import static org.junit.jupiter.api.Assertions.*;
-
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import domain.User;
-import domain.UserManager;
-import domain.exception.UserNotFoundException;
 
 class UpdateUserTest {
 

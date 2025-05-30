@@ -1,11 +1,9 @@
-package domain;
+package domain.user;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import domain.exception.UserAlreadyExistsException;
-import domain.exception.UserNotFoundException;
 
 public class UserManager {
 

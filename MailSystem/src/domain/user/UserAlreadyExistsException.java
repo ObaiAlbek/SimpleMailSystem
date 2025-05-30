@@ -1,4 +1,4 @@
-package domain.exception;
+package domain.user;
 
 public class UserAlreadyExistsException extends Exception {
 	public UserAlreadyExistsException(String msg) {

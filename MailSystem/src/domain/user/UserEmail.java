@@ -1,4 +1,6 @@
-package domain;
+package domain.user;
+
+import domain.email.*;
 
 public class UserEmail {
 
@@ -6,11 +8,17 @@ public class UserEmail {
 	private int accountID;
 	private String username;
 	private char[] password;
+	private SentFolder sentFolder;
+	private TrashFolder trashFolder;
+	private Inbox inbox;
 	
 	public UserEmail(String username, char[] password) {
 		this.username = username;
 		this.password = password;
 		this.accountID = counter++;
+		this.sentFolder = new SentFolder();
+		this.trashFolder = new TrashFolder();
+		this.inbox = new Inbox();
 	}
 
 	public String getUsername() {
@@ -27,6 +35,18 @@ public class UserEmail {
 
 	public int getAccountID() {
 		return accountID;
+	}
+	
+	public SentFolder getSentFolder() {
+		return sentFolder;
+	}
+	
+	public TrashFolder getTrashFolder() {
+		return trashFolder;
+	}
+	
+	public Inbox getInbox() {
+		return inbox;
 	}
 	
 }

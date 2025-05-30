@@ -1,11 +1,10 @@
-package domain.unitTest;
+package domain.user;
 
 import static org.junit.Assert.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import domain.UserManager;
 
 class CheckLoginTest {
     private UserManager userManager;
