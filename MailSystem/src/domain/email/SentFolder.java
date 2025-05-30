@@ -53,11 +53,8 @@ public class SentFolder implements EmailFolder {
     }
 
     @Override
-    public String[] listAllEmails() {
-        String[] subjects = new String[emails.size()];
-        for (int i = 0; i < emails.size(); i++) 
-            subjects[i] = emails.get(i).toString();
-        
-        return subjects;
+    public ArrayList<Email> listAllEmails() {
+        return new ArrayList<>(emails); 
     }
+
 }

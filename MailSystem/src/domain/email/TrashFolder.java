@@ -56,12 +56,8 @@ public class TrashFolder implements EmailFolder {
     }
 
     @Override
-    public String[] listAllEmails() {
-        String[] subjects = new String[removedEmails.size()];
-        for (int i = 0; i < removedEmails.size(); i++) 
-        	subjects[i] = removedEmails.get(i).toString();
-        
-        return subjects;
+    public ArrayList<Email> listAllEmails() {
+        return new ArrayList<>(removedEmails); 
     }
 }
 

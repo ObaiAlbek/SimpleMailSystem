@@ -1,5 +1,7 @@
 package domain.email;
 
+import java.util.ArrayList;
+
 public interface EmailFolder {
 	
 	    boolean addEmail(Email email);
@@ -7,5 +9,5 @@ public interface EmailFolder {
 	    Email getEmailBySubject(String subject) throws EmailNotFoundException ;
 	    int getNumberOfEmails();
 	    boolean clearAllEmails();
-	    String[] listAllEmails();
+	    ArrayList<Email>listAllEmails();
 }

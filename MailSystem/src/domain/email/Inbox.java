@@ -57,12 +57,9 @@ public class Inbox implements EmailFolder {
     }
 
     @Override
-    public String[] listAllEmails() {
-        String[] subjects = new String[receivedEmails.size()];
-        for (int i = 0; i < receivedEmails.size(); i++) {
-            subjects[i] = receivedEmails.get(i).getSubject();
-        }
-        return subjects;
+    public ArrayList<Email> listAllEmails() {
+        return new ArrayList<>(receivedEmails); // sichere Kopie
     }
+
 }
 
