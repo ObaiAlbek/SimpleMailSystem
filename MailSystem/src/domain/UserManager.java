@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import domain.exception.UserAlreadyExistsException;
+import domain.exception.UserNotFoundException;
 
 public class UserManager {
 
     private ArrayList<User> users;
-
+    private User currentUser;
+    
     public UserManager() {
         this.users = new ArrayList<>();
     }
@@ -31,10 +33,8 @@ public class UserManager {
             throw new IllegalArgumentException("Passwords do not match!");
 
         String email = username + "@easymail.de";
-
-        for (User tempUser : users) 
-            if (tempUser.getUsermail().getUsername().equalsIgnoreCase(email)) 
-                throw new UserAlreadyExistsException("This email address is already taken!");
+        if (findUserByUsername(email) != null)
+        	throw new UserAlreadyExistsException("This email address is already taken!");
 
         int month = getMonthNumber(monthName);
         if (month == 0) 
@@ -63,8 +63,64 @@ public class UserManager {
         Arrays.fill(password, ' ');
         return false;
     }
+    
+    public boolean removeUser(String username) throws UserNotFoundException {
+        if (username == null || username.trim().isEmpty()) 
+            throw new IllegalArgumentException("Username cannot be null or empty!");
+        
+        User userToBeRemoved = findUserByUsername(username);
+        if (userToBeRemoved == null) 
+            throw new UserNotFoundException("This email address is not found!");
+        
+        users.remove(userToBeRemoved);
+        return true;
+    }
 
+    public int getNumberOfUsers() {
+    	return users.size();
+    }
+    public boolean updateUser(String username, String firstName, String lastName, char[] password, char[] confirm) throws Exception {
+        User userToBeUpdated = findUserByUsername(username);
+        if (userToBeUpdated == null)
+            throw new UserNotFoundException("This email address is not found!");
 
+        if (firstName == null || lastName == null || password == null || confirm == null)
+            throw new IllegalArgumentException("Fields cannot be null!");
+
+        if (firstName.trim().isEmpty() || lastName.trim().isEmpty())
+            throw new IllegalArgumentException("First name and last name are required!");
+
+        if (!Arrays.equals(password, confirm))
+            throw new IllegalArgumentException("Passwords do not match!");
+
+        userToBeUpdated.setFirstname(firstName);
+        userToBeUpdated.setLastname(lastName);
+        
+        char[] passwordCopy = Arrays.copyOf(password, password.length);
+        userToBeUpdated.getUsermail().setPassword(passwordCopy);
+        Arrays.fill(password, ' ');
+        Arrays.fill(confirm, ' ');
+
+        return true;
+    }
+
+    public User getUserByUsername(String username) {
+    	this.currentUser = findUserByUsername(username);
+    	if (this.currentUser == null)
+    		return null;
+    	
+		return currentUser;
+	}
+    
+    private User findUserByUsername(String username) {
+    	for (User tempUser : users)
+    		if (tempUser.getUsermail().getUsername().equalsIgnoreCase(username))
+    				return tempUser;
+    	
+    	return null;
+    }
+    
+    
     private int getMonthNumber(String txtMonth) {
         switch (txtMonth.toLowerCase()) {
             case "januar": return 1;
@@ -82,5 +138,7 @@ public class UserManager {
             default: return 0;
         }
     }
+
+	
 }
 
