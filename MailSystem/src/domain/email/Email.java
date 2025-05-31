@@ -1,5 +1,6 @@
 package domain.email;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import domain.user.*;
 
@@ -33,10 +34,18 @@ public class Email {
 	public LocalDateTime getDate() {
 		return date;
 	}
+	
+	private String formattDate() {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        String formattedDate = date.format(formatter);
+        return formattedDate;
+	}
 
-	@Override
-	public String toString() {
-		return "Email [sender=" + sender + ", receiver=" + receiver + ", subject=" + subject + ", content=" + content
-				+ ", date=" + date + "]";
+	public String showEmailsInSent() {
+		return receiver.getUsermail().getUsername() + "," +  subject + "," + formattDate() + "," + content ;
+	}
+	
+	public String showEmails() {
+		return sender.getUsermail().getUsername() + "," +  subject + "," + formattDate() + "," + content ;
 	}
 }

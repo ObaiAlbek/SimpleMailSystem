@@ -7,19 +7,23 @@ import javax.swing.border.LineBorder;
 import domain.EasyMail;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class RegisterWindow extends JFrame {
 	
 	private EasyMail fassade;
+	private LoginWindow login;
 	private JTextField firstNameField, lastNameField, usernameField;
     private JPasswordField passwordField, confirmPasswordField;
     private JComboBox<Integer> dayComboBox, yearComboBox;
     private JComboBox<String> monthComboBox;
-    private EasyMailWindow easyMail;
+    
     
     public RegisterWindow() {
+    	setResizable(false);
     	this.fassade = new EasyMail();
     
         setTitle("RegisterWindow - EasyMail");
@@ -109,6 +113,14 @@ public class RegisterWindow extends JFrame {
         loginLabel.setFont(new Font("Times New Roman", Font.BOLD, 25));
         loginLabel.setBounds(406, 566, 117, 29);
         panel.add(loginLabel);
+        loginLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        loginLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            	handleLogIn();
+            }
+        });
+        
         showWindow();
     }
 
@@ -143,16 +155,39 @@ public class RegisterWindow extends JFrame {
         	int day = (int) dayComboBox.getSelectedItem();
         	int year = (int) yearComboBox.getSelectedItem();
         	String month = (String) monthComboBox.getSelectedItem();
+        	
+
 			fassade.userRegister(firstName, lastName, userName, year, day, month, password, passwordConfirmation);
 			Arrays.fill(password, ' ');
 			Arrays.fill(passwordConfirmation, ' ');
 			restInputs();
 			this.closeWindow();
-			this.easyMail = new EasyMailWindow();
-			this.easyMail.showWindow();
+			showEasyMailWindow();
+			
 		} catch (Exception e) {
 			showError(e.getMessage());
 		}
+    }
+    
+    private void handleLogIn() {
+        login = new LoginWindow();
+        login.showWindow();
+        login.getFassade(fassade); 
+        
+        login.setLoginListener(() -> {
+        	
+            login.dispose(); 
+            closeWindow();
+            showEasyMailWindow();
+        });
+     
+    }
+    
+    private void showEasyMailWindow() {
+    	EasyMailWindow easyMail = new EasyMailWindow();
+		easyMail.showWindow();
+		easyMail.getFassade(fassade);
+		easyMail.showUserDetails();
     }
     
     

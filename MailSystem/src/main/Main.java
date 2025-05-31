@@ -1,11 +1,11 @@
 package main;
 
-import gui.RegisterWindow;
+import gui.*;
 
 public class Main {
 
 	public static void main(String[] args) {
-		new RegisterWindow();	
+		new RegisterWindow();
 		
 	}
 

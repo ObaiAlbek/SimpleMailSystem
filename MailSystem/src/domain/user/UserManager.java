@@ -10,17 +10,17 @@ public class UserManager {
     private ArrayList<User> users;
     private User currentUser;
     
-    public UserManager() {
+    public UserManager(){
         this.users = new ArrayList<>();
+    	try {
+			User obai = addUser ("obai","albek","obai.albek",1,1,"Januar",new char[] {'1','2','3','4','5','6'} , new char[]{'1','2','3','4','5','6'});
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+       
     }
-
 	public User addUser(String firstName, String lastName, String username, int year, int day, String monthName,
 			char[] password, char[] passwordConfirmation) throws Exception {
-
-		if (firstName == null || lastName == null || username == null || password == null
-				|| passwordConfirmation == null) {
-			throw new IllegalArgumentException("No input should be null!");
-		}
 
 		if (firstName.trim().isEmpty() || lastName.trim().isEmpty() || username.trim().isEmpty() || password.length == 0
 				|| passwordConfirmation.length == 0) {
@@ -42,6 +42,7 @@ public class UserManager {
 
 		LocalDate birthDate = LocalDate.of(year, month, day);
 		char[] passwordCopy = Arrays.copyOf(password, password.length);
+
 		User newUser = new User(firstName, lastName, birthDate, email, passwordCopy);
 
 		users.add(newUser);
@@ -52,8 +53,8 @@ public class UserManager {
 	}
 
 	public User checkLogin(String username, char[] password)throws Exception{
-		if (username == null || password == null)
-			throw new UserAlreadyExistsException("This email address is already taken!");
+		if (username.trim().isEmpty() || password.length == 0)
+			throw new UserAlreadyExistsException("All fields are required!");
 
 		for (User user : users)
 			if (user.getUsermail().getUsername().equalsIgnoreCase(username)

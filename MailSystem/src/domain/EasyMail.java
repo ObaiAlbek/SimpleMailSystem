@@ -1,8 +1,10 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import domain.email.Email;
+import domain.email.EmailFolder;
 import domain.user.*;
 
 public class EasyMail {
@@ -13,10 +15,8 @@ public class EasyMail {
 		this.userManager = new UserManager();
 	}
 
-	public void userRegister(String firstname, String lastName, String username, int year, int day, String monthName,
-			char[] password, char[] passwordConfirmation) throws Exception {
-		this.currentUser = userManager.addUser(firstname, lastName, username, year, day, monthName, password,
-				passwordConfirmation);
+	public void userRegister(String firstname, String lastName, String username, int year, int day, String monthName,char[] password, char[] passwordConfirmation) throws Exception {
+		this.currentUser = userManager.addUser(firstname, lastName, username, year, day, monthName, password,passwordConfirmation);
 	}
 
 	public boolean userSignIn(String username, char[] password) throws Exception {
@@ -58,69 +58,81 @@ public class EasyMail {
 		sender.getUsermail().getSentFolder().addEmail(newEmail);
 		return receiver.getUsermail().getInbox().addEmail(newEmail);
 	}
-
-	public String[] listAllEmailsInInbox() {
-		int size = currentUser.getUsermail().getInbox().getNumberOfEmails();
-		String[] treffer = new String[size];
-
-		for (int i = 0; i < treffer.length; i++)
-			treffer[i] = currentUser.getUsermail().getInbox().toString();
-
-		return treffer;
+	
+	public String[] sendUserDetails() {
+		String[] details = new String[2];
+		String name = this.currentUser.getFirstname() + " " + this.currentUser.getLastname();
+		String username =  this.currentUser.getUsermail().getUsername();
+		details[0] = name; 
+		details[1] = username;
+		
+		return details;
+	}
+	
+	public String getUsernameFromCurrentUser() {
+		return this.currentUser.getUsermail().getUsername();
 	}
 
-	public String[] listAllEmailsInSentFolder() {
-		int size = currentUser.getUsermail().getSentFolder().getNumberOfEmails();
-		String[] treffer = new String[size];
-
-		for (int i = 0; i < treffer.length; i++)
-			treffer[i] = currentUser.getUsermail().getSentFolder().toString();
-
-		return treffer;
+	public ArrayList<String> sendAllEmailsToSentWindow() {
+	    ArrayList<Email> allEmails = currentUser.getUsermail().getSentFolder().listAllEmails();
+	    return extractEmails(allEmails, true); // true = showEmailsInSent
 	}
 
-	public String[] listAllEmailsInTrashFolder() {
-		int size = currentUser.getUsermail().getTrashFolder().getNumberOfEmails();
-		String[] treffer = new String[size];
-
-		for (int i = 0; i < treffer.length; i++)
-			treffer[i] = currentUser.getUsermail().getTrashFolder().toString();
-
-		return treffer;
+	public ArrayList<String> sendAllEmailsToInboxWindow() {
+	    ArrayList<Email> allEmails = currentUser.getUsermail().getInbox().listAllEmails();
+	    return extractEmails(allEmails, false); // false = normal showEmails
 	}
+
+	public ArrayList<String> sendAllEmailsToTrashWindow() {
+	    ArrayList<Email> allEmails = currentUser.getUsermail().getTrashFolder().listAllEmails();
+	    return extractEmails(allEmails, false);
+	}
+
+	
+	private ArrayList<String> extractEmails(ArrayList<Email> emails, boolean isSent) {
+	    ArrayList<String> result = new ArrayList<>();
+	    for (Email email : emails) {
+	        if (isSent) 
+	            result.add(email.showEmailsInSent());
+	        else 
+	            result.add(email.showEmails());
+	        
+	    }
+	    return result;
+	}
+
+
+	private void validateEmailOperation(String subject) {
+		if (subject == null || subject.trim().isEmpty()) {
+			throw new IllegalArgumentException("Subject field is required!");
+		}
+		if (this.currentUser == null || !this.currentUser.getUsermail().getStatus()) {
+			throw new IllegalStateException("No user is currently logged in!");
+		}
+	}
+
+	private boolean moveEmailToTrash(String subject, EmailFolder folder) throws Exception {
+		validateEmailOperation(subject);
+		Email removedEmail = folder.removeEmail(subject);
+		return this.currentUser.getUsermail().getTrashFolder().addEmail(removedEmail);
+	}
+
+
 
 	public boolean removeEmailFromInbox(String subject) throws Exception {
-		if (subject.trim().isEmpty())
-			throw new IllegalArgumentException("Subject field is required!");
-
-		if (!this.currentUser.getUsermail().getStatus())
-			throw new IllegalStateException("No user is currently logged in!");
-
-		Email removedEmail = this.currentUser.getUsermail().getInbox().removeEmail(subject);
-		return this.currentUser.getUsermail().getTrashFolder().addEmail(removedEmail);
-
+		return moveEmailToTrash(subject, this.currentUser.getUsermail().getInbox());
 	}
 
 	public boolean removeEmailFromSentFolder(String subject) throws Exception {
-		if (subject.trim().isEmpty())
-			throw new IllegalArgumentException("Subject field is required!");
-
-		if (!this.currentUser.getUsermail().getStatus())
-			throw new IllegalStateException("No user is currently logged in!");
-
-		Email removedEmail = this.currentUser.getUsermail().getInbox().removeEmail(subject);
-		return this.currentUser.getUsermail().getTrashFolder().addEmail(removedEmail);
+		return moveEmailToTrash(subject, this.currentUser.getUsermail().getSentFolder());
 	}
 
 	public void removeEmailFromTrash(String subject) throws Exception {
-		if (subject.trim().isEmpty())
-			throw new IllegalArgumentException("Subject field is required!");
-
-		if (!this.currentUser.getUsermail().getStatus())
-			throw new IllegalStateException("No user is currently logged in!");
-
+		validateEmailOperation(subject);
 		this.currentUser.getUsermail().getTrashFolder().removeEmail(subject);
 	}
+
+
 
 }
 	

@@ -58,7 +58,7 @@ public class Inbox implements EmailFolder {
 
     @Override
     public ArrayList<Email> listAllEmails() {
-        return new ArrayList<>(receivedEmails); // sichere Kopie
+        return new ArrayList<>(receivedEmails); 
     }
 
 }

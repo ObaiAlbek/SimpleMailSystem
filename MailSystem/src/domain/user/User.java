@@ -14,7 +14,7 @@ public class User {
 	public User(String firstname, String lastname, LocalDate birthdate,String nutzername, char[] password) {
 		this.userID = counter++;
 		this.firstname = firstname;
-		this.lastname = firstname;
+		this.lastname = lastname;
 		this.birthdate = birthdate;
 		this.usermail = new UserEmail(nutzername,password);
 	}
