@@ -8,15 +8,10 @@ import java.util.Arrays;
 public class UserManager {
 
     private ArrayList<User> users;
-    private User currentUser;
     
     public UserManager(){
         this.users = new ArrayList<>();
-    	try {
-			User obai = addUser ("obai","albek","obai.albek",1,1,"Januar",new char[] {'1','2','3','4','5','6'} , new char[]{'1','2','3','4','5','6'});
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+      // obai.albek@easymail.de
        
     }
 	public User addUser(String firstName, String lastName, String username, int year, int day, String monthName,
@@ -108,14 +103,7 @@ public class UserManager {
 		return userToBeUpdated;
 	}
 
-	public User getUserByUsername(String username) {
-		this.currentUser = findUserByUsername(username);
-		if (this.currentUser == null)
-			return null;
-
-		return currentUser;
-	}
-
+	
 	public User findUserByUsername(String username) {
 		for (User tempUser : users)
 			if (tempUser.getUsermail().getUsername().equalsIgnoreCase(username))

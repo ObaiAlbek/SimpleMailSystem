@@ -1,83 +1,46 @@
 package gui;
 
-import java.awt.EventQueue;
+import javax.swing.*;
+import java.awt.*;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-
-import domain.EasyMail;
-
-import java.awt.Color;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
-import java.awt.Font;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import javax.swing.JButton;
-
-public class ComposeEmailWindow extends JFrame {
+public class ComposeEmailWindow extends TemplateWindow {
 
 	private JTextField txtFrom;
 	private JTextField txtTo;
 	private JTextArea textAreaSubject;
 	private JTextArea textAreaContent;
-	private EasyMail fassade;
 	private EmailSentListener emailSentListener;
 
-
 	public ComposeEmailWindow() {
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		super("Compose Email - EasyMail"); 
 		setBounds(100, 100, 802, 730);
 		setLocationRelativeTo(null);
+		initUI();
+	}
 
-		JPanel contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
-
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(230, 230, 230));
-		panel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel.setBounds(10, 11, 762, 669);
-		panel.setLayout(null);
+	private void initUI() {
+		JPanel panel = createPanel(10, 11, 762, 669, new Color(230, 230, 230), true);
 		contentPane.add(panel);
+		panel.setLayout(null);
 
-		JLabel composeEmail = new JLabel("Compose Email");
-		composeEmail.setFont(new Font("Times New Roman", Font.BOLD, 30));
-		composeEmail.setBounds(21, 27, 259, 54);
+		JLabel composeEmail = createLabel("Compose Email", 21, 27, 300, 54, 30);
 		panel.add(composeEmail);
 
-		txtFrom = new JTextField();
-		txtFrom.setEnabled(false);
-		txtFrom.setBounds(102, 92, 509, 41);
-		panel.add(txtFrom);
-		txtFrom.setColumns(10);
+		JLabel fromLabel = createLabel("From: ", 21, 92, 71, 41, 20);
+		panel.add(fromLabel);
+
+		txtFrom = createTextField(102, 92, 509, 41);
 		txtFrom.setEditable(false);
+		panel.add(txtFrom);
 
-		JLabel from = new JLabel("From: ");
-		from.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		from.setBounds(21, 92, 71, 41);
-		panel.add(from);
+		JLabel toLabel = createLabel("To:", 21, 165, 71, 41, 20);
+		panel.add(toLabel);
 
-		JLabel to = new JLabel("To:");
-		to.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		to.setBounds(21, 165, 71, 41);
-		panel.add(to);
-
-		txtTo = new JTextField();
-		txtTo.setColumns(10);
-		txtTo.setBounds(102, 167, 509, 41);
+		txtTo = createTextField(102, 167, 509, 41);
 		panel.add(txtTo);
 
-		JLabel subject = new JLabel("Subject:");
-		subject.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		subject.setBounds(21, 239, 71, 41);
-		panel.add(subject);
+		JLabel subjectLabel = createLabel("Subject:", 21, 239, 71, 41, 20);
+		panel.add(subjectLabel);
 
 		// Subject TextArea + ScrollPane
 		textAreaSubject = new JTextArea();
@@ -94,15 +57,18 @@ public class ComposeEmailWindow extends JFrame {
 		contentScrollPane.setBounds(21, 309, 617, 285);
 		panel.add(contentScrollPane);
 
-		JButton btnSend = new JButton("Send");
-		btnSend.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		btnSend.setBounds(21, 622, 133, 36);
+		JButton btnSend = createButton("Send", 21, 622, 133, 36, 20);
 		panel.add(btnSend);
 
 		btnSend.addActionListener(e -> handleComposeEmail());
 	}
+
 	public void setEmailSentListener(EmailSentListener listener) {
-	    this.emailSentListener = listener;
+		this.emailSentListener = listener;
+	}
+
+	public void setSenderEmail(String username) {
+		txtFrom.setText(username);
 	}
 
 	public void handleComposeEmail() {
@@ -110,44 +76,20 @@ public class ComposeEmailWindow extends JFrame {
 		String subject = textAreaSubject.getText();
 		String content = textAreaContent.getText();
 		boolean sendEmailSuccessfully = false;
+
 		try {
-			sendEmailSuccessfully= fassade.sendEmail(to, subject, content);
-			txtTo.setText("");
-			textAreaSubject.setText("");
-			textAreaContent.setText("");
+			sendEmailSuccessfully = fassade.sendEmail(to, subject, content);
 			if (sendEmailSuccessfully) {
 				showInfo("Your email was sent successfully");
-				  if (emailSentListener != null) 
-				        emailSentListener.onEmailSent();
-				    
+				if (emailSentListener != null) 
+					emailSentListener.onEmailSent();
+		
+				txtTo.setText("");
+				textAreaSubject.setText("");
+				textAreaContent.setText("");
 			}
-			
 		} catch (Exception e) {
 			showError(e.getMessage());
 		}
-	}
-
-	public void setSenderEmail(String username) {
-		txtFrom.setText(username);
-	}
-
-	public void getFassade(EasyMail fassade) {
-		this.fassade = fassade;
-	}
-
-	public void showWindow() {
-		this.setVisible(true);
-	}
-
-	public void closeWindow() {
-		this.dispose();
-	}
-	
-	public void showInfo(String info) {
-		JOptionPane.showMessageDialog(this,info,"Success", JOptionPane.INFORMATION_MESSAGE);
-	}
-
-	public void showError(String error) {
-		JOptionPane.showMessageDialog(this,error,"Error", JOptionPane.ERROR_MESSAGE);
 	}
 }

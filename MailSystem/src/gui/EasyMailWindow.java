@@ -1,197 +1,131 @@
 package gui;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.table.DefaultTableModel;
-
-import domain.EasyMail;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class EasyMailWindow extends JFrame {
+public class EasyMailWindow extends TemplateWindow {
 
-	private JTable inboxTable;
-	private DefaultTableModel inboxTableModel;
-	private EasyMail fassade;
-	private JLabel fullName,username;
-	
-	public EasyMailWindow() {
-		setResizable(false);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1143, 774);
-		setLocationRelativeTo(null);
+    private DefaultTableModel inboxTableModel;
 
-		JPanel contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		setContentPane(contentPane);
-		contentPane.setLayout(null);
+    public EasyMailWindow() {
+        super("EasyMail");
+        initUI();
+    }
 
-		// Profile Panel
-		JPanel panel = new JPanel();
-		panel.setBackground(new Color(230, 230, 230));
-		panel.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel.setBounds(10, 273, 347, 451);
-		contentPane.add(panel);
-		panel.setLayout(null);
+    private void initUI() {
+        initNavigationPanel();
+        initComposePanel();
+        initTablePanel();
+        getAllInboxEmails(); 
+        showUserDetails();
+    }
 
-		JLabel sentEmails = new JLabel("Sent");
-		sentEmails.setForeground(new Color(0, 0, 255));
-		sentEmails.setFont(new Font("Times New Roman", Font.PLAIN, 22));
-		sentEmails.setBounds(10, 11, 165, 39);
-		panel.add(sentEmails);
-		
-		sentEmails.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		sentEmails.addMouseListener(new MouseAdapter() {
-		    @Override
-		    public void mouseClicked(MouseEvent e) {
-		    	SentWindow sentWindow = new SentWindow();
-		    	closeWindow();
-		    	sentWindow.showWindow();
-		    	sentWindow.getFassade(fassade);
-		    	sentWindow.getAllSentEmails();
-		    	showUserDetails();
-		    }
-		});
+   
 
-		JLabel trash = new JLabel("Trash");
-		trash.setForeground(new Color(0, 0, 255));
-		trash.setFont(new Font("Times New Roman", Font.PLAIN, 22));
-		trash.setBounds(10, 61, 165, 39);
-		panel.add(trash);
-		trash.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		trash.addMouseListener(new MouseAdapter() {
-		    @Override
-		    public void mouseClicked(MouseEvent e) {
-		    	TrashWindow trash = new TrashWindow();
-		    	closeWindow();
-		    	trash.showWindow();
-		    	trash.getFassade(fassade);
-		    	trash.getAllTrashEmails();
-		    	showUserDetails();
-		    }
-		});
-		
+    private void initNavigationPanel() {
+        JPanel navigationPanel = createPanel(10, 273, 347, 451, new Color(230, 230, 230), true);
+        contentPane.add(navigationPanel);
+        navigationPanel.setLayout(null);
 
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(230, 230, 230));
-		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel_1.setBounds(10, 11, 347, 239);
-		contentPane.add(panel_1);
-		panel_1.setLayout(null);
+        JLabel sentEmails = createLabel("Sent", 10, 11, 165, 39, 22);
+        sentEmails.setForeground(Color.BLUE);
+        sentEmails.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        sentEmails.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleSentClick();
+            }
+        });
+        navigationPanel.add(sentEmails);
 
-		JLabel profile = new JLabel("Profile");
-		profile.setFont(new Font("Times New Roman", Font.BOLD, 30));
-		profile.setBounds(10, 11, 203, 41);
-		panel_1.add(profile);
+        JLabel trash = createLabel("Trash", 10, 61, 165, 39, 22);
+        trash.setForeground(Color.BLUE);
+        trash.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        trash.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleTrashClick();
+            }
+        });
+        navigationPanel.add(trash);
+    }
 
-		fullName = new JLabel("Full Name: ");
-		fullName.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		fullName.setBounds(10, 63, 327, 41);
-		panel_1.add(fullName);
+    private void initComposePanel() {
+        JPanel composePanel = createPanel(367, 11, 750, 86, new Color(230, 230, 230), true);
+        contentPane.add(composePanel);
+        composePanel.setLayout(null);
 
-		username = new JLabel("Email: ");
-		username.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-		username.setBounds(10, 106, 327, 39);
-		panel_1.add(username);
+        JLabel writeEmail = createLabel("New Email", 10, 11, 121, 64, 22);
+        writeEmail.setForeground(Color.BLUE);
+        writeEmail.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        writeEmail.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleComposeEmail();
+            }
+        });
+        composePanel.add(writeEmail);
+    }
 
-		JLabel editProfile = new JLabel("Edit profile");
-		editProfile.setForeground(Color.BLUE);
-		editProfile.setFont(new Font("Times New Roman", Font.PLAIN, 22));
-		editProfile.setBounds(10, 189, 165, 39);
-		panel_1.add(editProfile);
+    private void initTablePanel() {
+        JPanel tablePanel = createPanel(367, 105, 750, 619, null, true);
+        contentPane.add(tablePanel);
+        tablePanel.setLayout(null);
 
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel_2.setBackground(new Color(230, 230, 230));
-		panel_2.setBounds(367, 11, 750, 86);
-		contentPane.add(panel_2);
-		panel_2.setLayout(null);
+        JScrollPane scrollPane = createTable("From");
+        inboxTableModel = (DefaultTableModel) inboxTable.getModel();
+        scrollPane.setBounds(0, 0, 750, 619);
+        tablePanel.add(scrollPane);
+    }
 
-		JLabel writeEmail = new JLabel("New Email");
-		writeEmail.setForeground(Color.BLUE);
-		writeEmail.setFont(new Font("Times New Roman", Font.PLAIN, 22));
-		writeEmail.setBounds(10, 11, 121, 64);
-		panel_2.add(writeEmail);
-		
-		writeEmail.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		writeEmail.addMouseListener(new MouseAdapter() {
-		    @Override
-		    public void mouseClicked(MouseEvent e) {
-		        handleComposeEmail(); 
-		    }
-		});
+    private void handleSentClick() {
+        SentWindow sentWindow = new SentWindow();
+        closeWindow();
+        sentWindow.showWindow();
+        sentWindow.getAllSentEmails();
+        showUserDetails();
+    }
 
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new LineBorder(new Color(0, 0, 0)));
-		panel_3.setBounds(367, 105, 750, 619);
-		contentPane.add(panel_3);
+    private void handleTrashClick() {
+        TrashWindow trashWindow = new TrashWindow();
+        closeWindow();
+        trashWindow.showWindow();
+        trashWindow.getAllTrashEmails();
+        showUserDetails();
+    }
 
-		String[] columnNames = { "From", "Subject", "Date" };
-		inboxTableModel = new DefaultTableModel(columnNames, 0); 
+    public void handleComposeEmail() {
+        ComposeEmailWindow emailWindow = new ComposeEmailWindow();
+        emailWindow.showWindow();
 
-		inboxTable = new JTable(inboxTableModel);
-		inboxTable.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		inboxTable.setRowHeight(24);
-		inboxTable.setDefaultEditor(Object.class, null); 
-		panel_3.setLayout(null);
+        String senderEmail = fassade.getUsernameFromCurrentUser();
+        emailWindow.setSenderEmail(senderEmail);
 
-		JScrollPane scrollPane = new JScrollPane(inboxTable);
-		scrollPane.setBounds(0, 0, 750, 619);
-		panel_3.add(scrollPane);
-	}
-	
-	public void handleComposeEmail() {
-	    ComposeEmailWindow emailWindow = new ComposeEmailWindow();
-	    emailWindow.showWindow();
-	    emailWindow.getFassade(fassade);
+        emailWindow.setEmailSentListener(() -> {
+            inboxTableModel.setRowCount(0); 
+           getAllInboxEmails(); 
+        });
+    }
 
-	    String senderEmail = fassade.getUsernameFromCurrentUser();
-	    emailWindow.setSenderEmail(senderEmail);
-
-	    emailWindow.setEmailSentListener(() -> {
-	        inboxTableModel.setRowCount(0); 
-	        System.out.println("Jpi");
-	        getAllInboxEmails();            
-	    });
-	}
 	public void getAllInboxEmails() {
+		if (fassade.getUsernameFromCurrentUser() == null) {
+			showError("No user is currently logged in!");
+			return;
+		}
+		inboxTableModel.setRowCount(0); 
 		ArrayList<String> getEmails = fassade.sendAllEmailsToInboxWindow();
-		String[] splitEmail;
-		if (getEmails.size() > 0)
-			for (String tempEmail :getEmails ) {
-				splitEmail = tempEmail.split(",");
-				String from = splitEmail[0].toString();
-				String subject = splitEmail[1];
-				String date = splitEmail[2];
-				Object[] newEmail = {from, subject, date};
+		if (getEmails != null && !getEmails.isEmpty()) 
+			for (String tempEmail : getEmails) {
+				String[] splitEmail = tempEmail.split(",");
+				Object[] newEmail = { splitEmail[0], splitEmail[1], splitEmail[2] };
 				inboxTableModel.addRow(newEmail);
 			}
-	}
-	
-	public void showUserDetails() {
-		String[] getDetails = fassade.sendUserDetails();
-		String fullName = getDetails[0];
-		String username = getDetails[1];
 		
-		this.fullName.setText(this.fullName.getText() + fullName);
-		this.username.setText(this.username.getText() + username);
-	}
-	
-	public void getFassade(EasyMail fassade) {
-		this.fassade = fassade;
-	}
-
-	public void showWindow() {
-		this.setVisible(true);
-	}
-
-	public void closeWindow() {
-		this.dispose();
-	}
-	public void showError(String error) {
-		JOptionPane.showMessageDialog(this, "Error", error, JOptionPane.ERROR_MESSAGE);
 	}
 }
+
+

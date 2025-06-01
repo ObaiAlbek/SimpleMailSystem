@@ -15,7 +15,7 @@ public class Inbox implements EmailFolder {
         if (email == null) {
             return false;
         }
-        receivedEmails.add(email);
+       this.receivedEmails.add(email);
         return true;
     }
 
