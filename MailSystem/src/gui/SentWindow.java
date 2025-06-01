@@ -76,7 +76,7 @@ public class SentWindow extends TemplateWindow {
     }
 
 	public void getAllSentEmails() {
-		ArrayList<String> getEmails = fassade.sendAllEmailstoSentWindow();
+		ArrayList<String> getEmails = fassade.sendAllEmailsToSentWindow();
 		String[] splitEmail;
 		if (getEmails.size() > 0)
 			for (String tempEmail : getEmails) {

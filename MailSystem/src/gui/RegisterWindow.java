@@ -60,14 +60,13 @@ public class RegisterWindow extends TemplateWindow {
     }
     
     
-    
-
+ 
     private void initUI() {
         JPanel panel = createPanel(81, 80, 573, 709, new Color(230, 230, 230), true);
         contentPane.add(panel);
         panel.setLayout(null);
 
-        JLabel titleLabel = createLabel("Register - EasyMail", 85, 11, 387, 53, 30);
+        JLabel titleLabel = createLabel("Register - EasyMail", 160, 11, 387, 53, 30);
         panel.add(titleLabel);
 
         // First Name

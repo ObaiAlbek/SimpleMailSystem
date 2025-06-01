@@ -15,7 +15,8 @@ public class EasyMail {
 		this.userManager = new UserManager();
 		  try {
 	        	this.currentUser = userManager.addUser ("obai","albek","obai.albek",1,1,"Januar",new char[] {'1','2','3','4','5','6'} , new char[]{'1','2','3','4','5','6'});
-			} catch (Exception e) {
+	        	//obai.albek@easymail.de
+		  } catch (Exception e) {
 				e.printStackTrace();
 			}
 	}
@@ -80,37 +81,36 @@ public class EasyMail {
 		return this.currentUser.getUsermail().getUsername();
 	}
 
-	public ArrayList<String> sendAllEmailstoSentWindow() {
-		ArrayList<Email> allEmails = this.currentUser.getUsermail().getSentFolder().listAllEmails();
-		ArrayList<String> treffer = new ArrayList<>();
-
-		for (Email tempEmail : allEmails)
-			treffer.add(tempEmail.showEmailsInSent());
-
-		return treffer;
+	
+	public ArrayList<String> sendAllEmailsToSentWindow() {
+	    ArrayList<Email> allEmails = currentUser.getUsermail().getSentFolder().listAllEmails();
+	    return extractEmails(allEmails, true); // true = showEmailsInSent
 	}
 	
-	public ArrayList<String>sendAllEmailsToInboxWindow() {
-		ArrayList<Email> allEmails = this.currentUser.getUsermail().getInbox().listAllEmails();
-		ArrayList<String> treffer = new ArrayList<>();
-		
-		for (Email tempEmail : allEmails)
-			treffer.add(tempEmail.showEmails());
-
-		return treffer;
-		
+	public ArrayList<String> sendAllEmailsToInboxWindow() {
+	    ArrayList<Email> allEmails = currentUser.getUsermail().getInbox().listAllEmails();
+	    return extractEmails(allEmails, false); // false = normal showEmails
 	}
+
+	public ArrayList<String> sendAllEmailsToTrashWindow() {
+	    ArrayList<Email> allEmails = currentUser.getUsermail().getTrashFolder().listAllEmails();
+	    return extractEmails(allEmails, false);
+	}
+
 	
-	public ArrayList<String>sendAllEmailsToTrashWindow() {
-		ArrayList<Email> allEmails = this.currentUser.getUsermail().getTrashFolder().listAllEmails();
-		ArrayList<String> treffer = new ArrayList<>();
-		
-		for (Email tempEmail : allEmails)
-			treffer.add(tempEmail.showEmails());
-
-		return treffer;
-		
+	private ArrayList<String> extractEmails(ArrayList<Email> emails, boolean isSent) {
+	    ArrayList<String> result = new ArrayList<>();
+	    for (Email email : emails) {
+	        if (isSent) 
+	            result.add(email.showEmailsInSent());
+	        else 
+	            result.add(email.showEmails());
+	        
+	    }
+	    return result;
 	}
+
+
 
 
 	private void validateEmailOperation(String subject) {

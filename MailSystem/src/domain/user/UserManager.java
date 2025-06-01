@@ -11,7 +11,7 @@ public class UserManager {
     
     public UserManager(){
         this.users = new ArrayList<>();
-      // obai.albek@easymail.de
+
        
     }
 	public User addUser(String firstName, String lastName, String username, int year, int day, String monthName,

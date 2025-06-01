@@ -52,6 +52,8 @@ public class EasyMailWindow extends TemplateWindow {
             }
         });
         navigationPanel.add(trash);
+        
+        
     }
 
     private void initComposePanel() {

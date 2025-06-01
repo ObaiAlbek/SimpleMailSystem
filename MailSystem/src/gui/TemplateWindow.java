@@ -57,6 +57,13 @@ public abstract class TemplateWindow extends JFrame {
 		editProfile = createLabel("Edit profile", 10, 189, 165, 39, 22);
 		editProfile.setForeground(Color.BLUE);
 		profilePanel.add(editProfile);
+		editProfile.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		editProfile.addMouseListener(new MouseAdapter() {
+	            @Override
+	            public void mouseClicked(MouseEvent e) {
+	               System.out.println("Test");
+	            }
+	        });
 
 		String[] getDetails = fassade.sendUserDetails();
 		String fullName = getDetails[0];
