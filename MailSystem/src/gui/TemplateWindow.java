@@ -61,7 +61,11 @@ public abstract class TemplateWindow extends JFrame {
 		editProfile.addMouseListener(new MouseAdapter() {
 	            @Override
 	            public void mouseClicked(MouseEvent e) {
-	               System.out.println("Test");
+	            	EditProfileWindow editProfile = new EditProfileWindow(); 
+	            	editProfile.setUpdateProfileListener(() -> {
+	            		showUserDetails();
+	            	});
+	     	
 	            }
 	        });
 

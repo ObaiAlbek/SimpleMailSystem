@@ -38,9 +38,12 @@ public class EasyMail {
 		return userManager.removeUser(username);
 	}
 
-	public void updateUser(String username, String firstName, String lastName, char[] password, char[] confirm)
+	public void  updateUser(String firstName, String lastName, String username, int year, int day, String monthName,
+			char[] password, char[] passwordConfirmation)
 			throws Exception {
-		this.currentUser = userManager.updateUser(username, firstName, lastName, password, confirm);
+		
+		this.currentUser = userManager.updateUser(firstName, lastName, username, year, day, monthName, password, passwordConfirmation);
+		
 	}
 
 	public int getNumberOfUsers() {

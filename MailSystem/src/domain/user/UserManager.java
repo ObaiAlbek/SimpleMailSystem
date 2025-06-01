@@ -77,31 +77,53 @@ public class UserManager {
 		return users.size();
 	}
 
-	public User updateUser(String username, String firstName, String lastName, char[] password, char[] confirm)
-			throws Exception {
-		User userToBeUpdated = findUserByUsername(username);
-		if (userToBeUpdated == null)
-			throw new UserNotFoundException("This email address is not found!");
+	public User updateUser(String firstName, String lastName, String username, int year, int day, String monthName,
+	        char[] password, char[] passwordConfirmation) throws Exception {
 
-		if (firstName == null || lastName == null || password == null || confirm == null)
-			throw new IllegalArgumentException("Fields cannot be null!");
+	    User userToBeUpdated = findUserByUsername(username);
+	    if (userToBeUpdated == null)
+	        throw new UserNotFoundException("This email address is not found!");
 
-		if (firstName.trim().isEmpty() || lastName.trim().isEmpty())
-			throw new IllegalArgumentException("First name and last name are required!");
+	    if (firstName != null && !firstName.trim().isEmpty()) {
+	        userToBeUpdated.setFirstname(firstName);
+	    }
 
-		if (!Arrays.equals(password, confirm))
-			throw new IllegalArgumentException("Passwords do not match!");
+	    if (lastName != null && !lastName.trim().isEmpty()) {
+	        userToBeUpdated.setLastname(lastName);
+	    }
 
-		userToBeUpdated.setFirstname(firstName);
-		userToBeUpdated.setLastname(lastName);
+	    if (year > 0 && day > 0 && monthName != null && !monthName.trim().isEmpty()) {
+	        int month = getMonthNumber(monthName);
+	        if (month == 0) {
+	            throw new IllegalArgumentException("Invalid month name: " + monthName);
+	        }
+	        LocalDate birthDate = LocalDate.of(year, month, day);
+	        userToBeUpdated.setBirthdate(birthDate);
+	    }
 
-		char[] passwordCopy = Arrays.copyOf(password, password.length);
-		userToBeUpdated.getUsermail().setPassword(passwordCopy);
-		Arrays.fill(password, ' ');
-		Arrays.fill(confirm, ' ');
+	    if (password != null && password.length > 0) {
+	        if (passwordConfirmation == null || passwordConfirmation.length == 0) {
+	            throw new IllegalArgumentException("Password confirmation required!");
+	        }
 
-		return userToBeUpdated;
+	        if (!Arrays.equals(password, passwordConfirmation)) {
+	            throw new IllegalArgumentException("Passwords do not match!");
+	        }
+
+	        if (password.length < 6) {
+	            throw new IllegalArgumentException("Password must be at least 6 characters long!");
+	        }
+
+	        char[] passwordCopy = Arrays.copyOf(password, password.length);
+	        userToBeUpdated.getUsermail().setPassword(passwordCopy);
+	    }
+
+	    Arrays.fill(password, ' ');
+	    Arrays.fill(passwordConfirmation, ' ');
+
+	    return userToBeUpdated;
 	}
+
 
 	
 	public User findUserByUsername(String username) {
