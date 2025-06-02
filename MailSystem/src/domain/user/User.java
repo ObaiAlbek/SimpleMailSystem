@@ -9,14 +9,14 @@ public class User {
 	private String firstname;
 	private String lastname;
 	private LocalDate birthdate;
-	private UserEmail usermail;
+	private UserEmail userEmail;
 
-	public User(String firstname, String lastname, LocalDate birthdate,String nutzername, char[] password) {
+	public User(String firstname, String lastname, LocalDate birthdate,String email, char[] password) {
 		this.userID = counter++;
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.birthdate = birthdate;
-		this.usermail = new UserEmail(nutzername,password);
+		this.userEmail = new UserEmail(email,password);
 	}
 
 	public String getFirstname() {
@@ -48,7 +48,7 @@ public class User {
 	}
 
 	public UserEmail getUsermail() {
-		return usermail;
+		return userEmail;
 	}
 
 }

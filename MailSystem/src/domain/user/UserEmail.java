@@ -6,7 +6,7 @@ public class UserEmail {
 
 	private static int counter = 1000;
 	private int accountID;
-	private String username;
+	private String email;
 	private boolean status;
 	private char[] password;
 	private SentFolder sentFolder;
@@ -14,7 +14,7 @@ public class UserEmail {
 	private Inbox inbox;
 	
 	public UserEmail(String username, char[] password) {
-		this.username = username;
+		this.email = username;
 		this.password = password;
 		this.accountID = counter++;
 		this.status = true;
@@ -23,8 +23,8 @@ public class UserEmail {
 		this.inbox = new Inbox();
 	}
 
-	public String getUsername() {
-		return username;
+	public String getUserEmail() {
+		return email;
 	}
 
 	public  char[] getPassword() {

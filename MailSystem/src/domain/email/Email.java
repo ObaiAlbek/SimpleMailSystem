@@ -42,10 +42,10 @@ public class Email {
 	}
 
 	public String showEmailsInSent() {
-		return receiver.getUsermail().getUsername() + "," +  subject + "," + formattDate() + "," + content ;
+		return receiver.getUsermail().getUserEmail() + "," +  subject + "," + formattDate() + "," + content ;
 	}
 	
 	public String showEmails() {
-		return sender.getUsermail().getUsername() + "," +  subject + "," + formattDate() + "," + content ;
+		return sender.getUsermail().getUserEmail() + "," +  subject + "," + formattDate() + "," + content ;
 	}
 }

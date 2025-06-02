@@ -21,8 +21,8 @@ public class EasyMail {
 			}
 	}
 
-	public void userRegister(String firstname, String lastName, String username, int year, int day, String monthName,char[] password, char[] passwordConfirmation) throws Exception {
-		this.currentUser = userManager.addUser(firstname, lastName, username, year, day, monthName, password,passwordConfirmation);
+	public void userRegister(String firstname, String lastName, String email, int year, int day, String monthName,char[] password, char[] passwordConfirmation) throws Exception {
+		this.currentUser = userManager.addUser(firstname, lastName, email, year, day, monthName, password,passwordConfirmation);
 	}
 
 	public boolean userSignIn(String username, char[] password) throws Exception {
@@ -73,7 +73,7 @@ public class EasyMail {
 	public String[] sendUserDetails() {
 		String[] details = new String[2];
 		String name = this.currentUser.getFirstname() + " " + this.currentUser.getLastname();
-		String username =  this.currentUser.getUsermail().getUsername();
+		String username =  this.currentUser.getUsermail().getUserEmail();
 		details[0] = name; 
 		details[1] = username;
 		
@@ -81,7 +81,7 @@ public class EasyMail {
 	}
 	
 	public String getUsernameFromCurrentUser() {
-		return this.currentUser.getUsermail().getUsername();
+		return this.currentUser.getUsermail().getUserEmail();
 	}
 
 	
