@@ -61,5 +61,6 @@ public class Inbox implements EmailFolder {
         return new ArrayList<>(receivedEmails); 
     }
 
+
 }
 

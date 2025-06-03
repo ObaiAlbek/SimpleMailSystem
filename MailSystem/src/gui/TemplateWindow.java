@@ -29,6 +29,8 @@ public abstract class TemplateWindow extends JFrame {
 	protected static  EasyMail fassade = new EasyMail();
 	protected JLabel fullName, username, editProfile;
 	protected JTable inboxTable;
+	private JPanel profilePanel; 
+
 
 	public TemplateWindow(String title) {
 		setTitle(title);
@@ -48,37 +50,49 @@ public abstract class TemplateWindow extends JFrame {
 	
 	
 	
-	protected void showUserDetails() {
-		JPanel profilePanel = createPanel(10, 11, 347, 239, new Color(230, 230, 230), true);
-		contentPane.add(profilePanel);
-		profilePanel.setLayout(null);
-		JLabel profile = createLabel("Profile", 10, 11, 203, 41, 30);
-		profilePanel.add(profile);
-		editProfile = createLabel("Edit profile", 10, 189, 165, 39, 22);
-		editProfile.setForeground(Color.BLUE);
-		profilePanel.add(editProfile);
-		editProfile.setCursor(new Cursor(Cursor.HAND_CURSOR));
-		editProfile.addMouseListener(new MouseAdapter() {
-	            @Override
-	            public void mouseClicked(MouseEvent e) {
-	            	EditProfileWindow editProfile = new EditProfileWindow(); 
-	            	editProfile.setUpdateProfileListener(() -> {
-	            		showUserDetails();
-	            	});
-	     	
-	            }
-	        });
 
-		String[] getDetails = fassade.sendUserDetails();
-		String fullName = getDetails[0];
-		String username = getDetails[1];
-		this.fullName =	createLabel("",10,63, 327, 41,20);
-		this.username = createLabel("",10, 106, 327, 39,20);
-		this.fullName.setText("Full Name: " + fullName);
-		this.username.setText("Email: " + username);
-		profilePanel.add(this.fullName);
-		profilePanel.add(this.username);
+	protected void showUserDetails() {
+	    if (profilePanel != null) 
+	    	contentPane.remove(profilePanel);
+	    
+	    profilePanel = createPanel(10, 11, 347, 239, new Color(230, 230, 230), true);
+	    contentPane.add(profilePanel);
+	    profilePanel.setLayout(null);
+
+	    JLabel profile = createLabel("Profile", 10, 11, 203, 41, 30);
+	    profilePanel.add(profile);
+
+	    editProfile = createLabel("Edit profile", 10, 189, 165, 39, 22);
+	    editProfile.setForeground(Color.BLUE);
+	    profilePanel.add(editProfile);
+	    editProfile.setCursor(new Cursor(Cursor.HAND_CURSOR));
+	    editProfile.addMouseListener(new MouseAdapter() {
+	        @Override
+	        public void mouseClicked(MouseEvent e) {
+	            EditProfileWindow editProfileWindow = new EditProfileWindow(); 
+	            editProfileWindow.setUpdateProfileListener(() -> {
+	                showUserDetails(); 
+	            });
+	        }
+	    });
+
+	    // User Details
+	    String[] getDetails = fassade.sendUserDetails();
+	    String fullName = getDetails[0];
+	    String username = getDetails[1];
+
+	    this.fullName = createLabel("", 10, 63, 327, 41, 20);
+	    this.username = createLabel("", 10, 106, 327, 39, 20);
+	    this.fullName.setText("Full Name: " + fullName);
+	    this.username.setText("Email: " + username);
+
+	    profilePanel.add(this.fullName);
+	    profilePanel.add(this.username);
+
+	    contentPane.revalidate();
+	    contentPane.repaint();
 	}
+
 
 	// Neue Methode
 	protected JPanel createPanel(int x, int y, int width, int height, Color bgColor, boolean withBorder) {

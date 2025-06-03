@@ -2,6 +2,9 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import domain.email.EmailNotFoundException;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -10,17 +13,19 @@ import java.util.ArrayList;
 public class EasyMailWindow extends TemplateWindow {
 
     private DefaultTableModel inboxTableModel;
+    private  JTextField searchField;
 
     public EasyMailWindow() {
         super("EasyMail");
         initUI();
+        showWindow();
     }
 
     private void initUI() {
         initNavigationPanel();
         initComposePanel();
         initTablePanel();
-        getAllInboxEmails(); 
+        getAllInboxEmails(""); 
         showUserDetails();
     }
 
@@ -52,9 +57,9 @@ public class EasyMailWindow extends TemplateWindow {
             }
         });
         navigationPanel.add(trash);
-        
-        
     }
+    
+   
 
     private void initComposePanel() {
         JPanel composePanel = createPanel(367, 11, 750, 86, new Color(230, 230, 230), true);
@@ -71,7 +76,29 @@ public class EasyMailWindow extends TemplateWindow {
             }
         });
         composePanel.add(writeEmail);
+
+        searchField = new PlaceholderTextField("Search By subject");
+        searchField.setBounds(500, 30, 150, 40);
+        composePanel.add(searchField);
+
+        JButton searchButton = new JButton("Search");
+        searchButton.setBounds(660, 30, 80, 40); 
+        composePanel.add(searchButton);
+        searchButton.addActionListener(e -> handleSearching());
+
+        
     }
+    
+	public void handleSearching() {
+		try {
+			String getSubjct = searchField.getText();
+			String email = fassade.searchEmailInInboxFolder(getSubjct);
+			inboxTableModel.setRowCount(0); 
+	        getAllInboxEmails(email); 
+		} catch (EmailNotFoundException e) {
+			this.showError(e.getMessage());
+		}
+	}
 
     private void initTablePanel() {
         JPanel tablePanel = createPanel(367, 105, 750, 619, null, true);
@@ -109,23 +136,27 @@ public class EasyMailWindow extends TemplateWindow {
 
         emailWindow.setEmailSentListener(() -> {
             inboxTableModel.setRowCount(0); 
-           getAllInboxEmails(); 
+           getAllInboxEmails(""); 
         });
     }
 
-	public void getAllInboxEmails() {
-		if (fassade.getUsernameFromCurrentUser() == null) {
-			showError("No user is currently logged in!");
-			return;
+	public void getAllInboxEmails(String foundedEmail) {
+		if (foundedEmail.trim().isEmpty()) {
+			inboxTableModel.setRowCount(0); 
+			ArrayList<String> getEmails = fassade.sendAllEmailsToInboxWindow();
+			if (getEmails != null && !getEmails.isEmpty()) 
+				for (String tempEmail : getEmails) {
+					String[] splitEmail = tempEmail.split(",");
+					Object[] newEmail = { splitEmail[0], splitEmail[1], splitEmail[2] };
+					inboxTableModel.addRow(newEmail);
+				}
+		}else {
+			String[] splitEmail = foundedEmail.split(",");
+			Object[] newEmail = { splitEmail[0], splitEmail[1], splitEmail[2] };
+			inboxTableModel.addRow(newEmail);
 		}
-		inboxTableModel.setRowCount(0); 
-		ArrayList<String> getEmails = fassade.sendAllEmailsToInboxWindow();
-		if (getEmails != null && !getEmails.isEmpty()) 
-			for (String tempEmail : getEmails) {
-				String[] splitEmail = tempEmail.split(",");
-				Object[] newEmail = { splitEmail[0], splitEmail[1], splitEmail[2] };
-				inboxTableModel.addRow(newEmail);
-			}
+			
+		
 		
 	}
 }

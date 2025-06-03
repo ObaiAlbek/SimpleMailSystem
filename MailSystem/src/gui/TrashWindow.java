@@ -44,7 +44,7 @@ public class TrashWindow extends TemplateWindow {
                 EasyMailWindow easyMailWindow = new EasyMailWindow();
                 closeWindow();
                 easyMailWindow.showWindow();
-                easyMailWindow.getAllInboxEmails();
+                easyMailWindow.getAllInboxEmails("");
             }
         });
         navigationPanel.add(inbox);

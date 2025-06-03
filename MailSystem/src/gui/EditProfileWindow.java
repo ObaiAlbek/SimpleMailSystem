@@ -117,6 +117,7 @@ public class EditProfileWindow extends TemplateWindow {
 			
 		    if (updateListener != null) {
 		    	updateListener.onUpdateSuccess();
+		    	restInputs();
 		    	showInfo("Profile updated successfully!");
 	        }
 			

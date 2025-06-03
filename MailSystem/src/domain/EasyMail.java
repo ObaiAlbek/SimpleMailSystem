@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import domain.email.Email;
 import domain.email.EmailFolder;
+import domain.email.EmailNotFoundException;
 import domain.user.*;
 
 public class EasyMail {
@@ -13,23 +14,26 @@ public class EasyMail {
 
 	public EasyMail() {
 		this.userManager = new UserManager();
-		  try {
-	        	this.currentUser = userManager.addUser ("obai","albek","obai.albek",1,1,"Januar",new char[] {'1','2','3','4','5','6'} , new char[]{'1','2','3','4','5','6'});
-	        	//obai.albek@easymail.de
-		  } catch (Exception e) {
-				e.printStackTrace();
-			}
+		try {
+			this.currentUser = userManager.addUser("obai", "albek", "obai.albek", 1, 1, "Januar",
+					new char[] { '1', '2', '3', '4', '5', '6' }, new char[] { '1', '2', '3', '4', '5', '6' });
+			// obai.albek@easymail.de
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
-	public void userRegister(String firstname, String lastName, String email, int year, int day, String monthName,char[] password, char[] passwordConfirmation) throws Exception {
-		this.currentUser = userManager.addUser(firstname, lastName, email, year, day, monthName, password,passwordConfirmation);
+	public void userRegister(String firstname, String lastName, String email, int year, int day, String monthName,
+			char[] password, char[] passwordConfirmation) throws Exception {
+		this.currentUser = userManager.addUser(firstname, lastName, email, year, day, monthName, password,
+				passwordConfirmation);
 	}
 
 	public boolean userSignIn(String username, char[] password) throws Exception {
 		this.currentUser = userManager.checkLogin(username, password);
 		if (this.currentUser == null)
 			return false;
-		
+
 		this.currentUser.getUsermail().signIn();
 		return this.currentUser.getUsermail().getStatus();
 	}
@@ -38,12 +42,12 @@ public class EasyMail {
 		return userManager.removeUser(username);
 	}
 
-	public void  updateUser(String firstName, String lastName, String username, int year, int day, String monthName,
-			char[] password, char[] passwordConfirmation)
-			throws Exception {
-		
-		this.currentUser = userManager.updateUser(firstName, lastName, username, year, day, monthName, password, passwordConfirmation);
-		
+	public void updateUser(String firstName, String lastName, String username, int year, int day, String monthName,
+			char[] password, char[] passwordConfirmation) throws Exception {
+
+		this.currentUser = userManager.updateUser(firstName, lastName, username, year, day, monthName, password,
+				passwordConfirmation);
+
 	}
 
 	public int getNumberOfUsers() {
@@ -64,57 +68,60 @@ public class EasyMail {
 
 		LocalDateTime timestamp = LocalDateTime.now();
 		Email newEmail = new Email(sender, receiver, subject, content, timestamp);
-		sender.getUsermail().getSentFolder().addEmail(newEmail);	
+		sender.getUsermail().getSentFolder().addEmail(newEmail);
 		boolean sent = receiver.getUsermail().getInbox().addEmail(newEmail);
-		
+
 		return sent;
+	}
+	
+	public String searchEmailInInboxFolder(String subject) throws EmailNotFoundException {
+		if (subject.trim().isEmpty())
+			throw new IllegalArgumentException("subject field is required!");
+	
+		Email email = this.currentUser.getUsermail().getInbox().getEmailBySubject(subject);
+		return email.showEmails();
 	}
 	
 	public String[] sendUserDetails() {
 		String[] details = new String[2];
 		String name = this.currentUser.getFirstname() + " " + this.currentUser.getLastname();
-		String username =  this.currentUser.getUsermail().getUserEmail();
-		details[0] = name; 
+		String username = this.currentUser.getUsermail().getUserEmail();
+		details[0] = name;
 		details[1] = username;
-		
+
 		return details;
 	}
-	
+
 	public String getUsernameFromCurrentUser() {
 		return this.currentUser.getUsermail().getUserEmail();
 	}
 
-	
 	public ArrayList<String> sendAllEmailsToSentWindow() {
-	    ArrayList<Email> allEmails = currentUser.getUsermail().getSentFolder().listAllEmails();
-	    return extractEmails(allEmails, true); // true = showEmailsInSent
+		ArrayList<Email> allEmails = currentUser.getUsermail().getSentFolder().listAllEmails();
+		return extractEmails(allEmails, true); // true = showEmailsInSent
 	}
-	
+
 	public ArrayList<String> sendAllEmailsToInboxWindow() {
-	    ArrayList<Email> allEmails = currentUser.getUsermail().getInbox().listAllEmails();
-	    return extractEmails(allEmails, false); // false = normal showEmails
+		ArrayList<Email> allEmails = currentUser.getUsermail().getInbox().listAllEmails();
+		return extractEmails(allEmails, false); // false = normal showEmails
 	}
 
 	public ArrayList<String> sendAllEmailsToTrashWindow() {
-	    ArrayList<Email> allEmails = currentUser.getUsermail().getTrashFolder().listAllEmails();
-	    return extractEmails(allEmails, false);
+		ArrayList<Email> allEmails = currentUser.getUsermail().getTrashFolder().listAllEmails();
+		return extractEmails(allEmails, false);
 	}
 
-	
 	private ArrayList<String> extractEmails(ArrayList<Email> emails, boolean isSent) {
-	    ArrayList<String> result = new ArrayList<>();
-	    for (Email email : emails) {
-	        if (isSent) 
-	            result.add(email.showEmailsInSent());
-	        else 
-	            result.add(email.showEmails());
-	        
-	    }
-	    return result;
+		ArrayList<String> result = new ArrayList<>();
+		for (Email email : emails) {
+			if (isSent)
+				result.add(email.showEmailsInSent());
+			else
+				result.add(email.showEmails());
+
+		}
+		return result;
 	}
-
-
-
 
 	private void validateEmailOperation(String subject) {
 		if (subject == null || subject.trim().isEmpty()) {
@@ -131,8 +138,6 @@ public class EasyMail {
 		return this.currentUser.getUsermail().getTrashFolder().addEmail(removedEmail);
 	}
 
-
-
 	public boolean removeEmailFromInbox(String subject) throws Exception {
 		return moveEmailToTrash(subject, this.currentUser.getUsermail().getInbox());
 	}
@@ -145,8 +150,6 @@ public class EasyMail {
 		validateEmailOperation(subject);
 		this.currentUser.getUsermail().getTrashFolder().removeEmail(subject);
 	}
-
-
 
 }
 	
