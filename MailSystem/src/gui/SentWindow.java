@@ -2,6 +2,9 @@ package gui;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+
+import domain.email.EmailNotFoundException;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -41,8 +44,14 @@ public class SentWindow extends TemplateWindow {
 	}
 
 	public void handleSearching() {
-		String getSubjct = searchField.getText();
-
+		try {
+			String getSubjct = searchField.getText();
+			String email = fassade.searchEmailInSentFolder(getSubjct);
+			inboxTableModel.setRowCount(0); 
+			getAllSentEmails(email); 
+		} catch (EmailNotFoundException e) {
+			this.showError(e.getMessage());
+		}
 	}
 
 	private void initNavigationPanel() {
@@ -90,17 +99,25 @@ public class SentWindow extends TemplateWindow {
 		tablePanel.add(scrollPane);
 	}
 
-	public void getAllSentEmails() {
-		ArrayList<String> getEmails = fassade.sendAllEmailsToSentWindow();
-		String[] splitEmail;
-		if (getEmails.size() > 0)
-			for (String tempEmail : getEmails) {
-				splitEmail = tempEmail.split(",");
-				String to = splitEmail[0].toString();
-				String subject = splitEmail[1];
-				String date = splitEmail[2];
-				Object[] newEmail = { to, subject, date };
-				inboxTableModel.addRow(newEmail);
-			}
+	public void getAllSentEmails(String email) {
+		if (email.trim().isEmpty()) {
+			ArrayList<String> getEmails = fassade.sendAllEmailsToSentWindow();
+			String[] splitEmail;
+			if (getEmails.size() > 0)
+				for (String tempEmail : getEmails) {
+					splitEmail = tempEmail.split(",");
+					String to = splitEmail[0].toString();
+					String subject = splitEmail[1];
+					String date = splitEmail[2];
+					Object[] newEmail = { to, subject, date };
+					inboxTableModel.addRow(newEmail);
+				}
+
+		} else {
+			String[] splitEmail = email.split(",");
+			Object[] newEmail = { splitEmail[0], splitEmail[1], splitEmail[2] };
+			inboxTableModel.addRow(newEmail);
+		}
+
 	}
 }

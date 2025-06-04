@@ -81,6 +81,21 @@ public class EasyMail {
 		Email email = this.currentUser.getUsermail().getInbox().getEmailBySubject(subject);
 		return email.showEmails();
 	}
+	public String searchEmailInSentFolder(String subject) throws EmailNotFoundException {
+		if (subject.trim().isEmpty())
+			throw new IllegalArgumentException("subject field is required!");
+	
+		Email email = this.currentUser.getUsermail().getSentFolder().getEmailBySubject(subject);
+		return email.showEmails();
+	}
+	public String searchEmailInTrashFolder(String subject) throws EmailNotFoundException {
+		if (subject.trim().isEmpty())
+			throw new IllegalArgumentException("subject field is required!");
+	
+		Email email = this.currentUser.getUsermail().getTrashFolder().getEmailBySubject(subject);
+		return email.showEmails();
+	}
+	
 	
 	public String[] sendUserDetails() {
 		String[] details = new String[2];

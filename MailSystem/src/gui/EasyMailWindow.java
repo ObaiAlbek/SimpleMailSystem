@@ -97,6 +97,7 @@ public class EasyMailWindow extends TemplateWindow {
 	        getAllInboxEmails(email); 
 		} catch (EmailNotFoundException e) {
 			this.showError(e.getMessage());
+			getAllInboxEmails("");
 		}
 	}
 
@@ -115,7 +116,7 @@ public class EasyMailWindow extends TemplateWindow {
         SentWindow sentWindow = new SentWindow();
         closeWindow();
         sentWindow.showWindow();
-        sentWindow.getAllSentEmails();
+        sentWindow.getAllSentEmails("");
         showUserDetails();
     }
 
@@ -142,22 +143,20 @@ public class EasyMailWindow extends TemplateWindow {
 
 	public void getAllInboxEmails(String foundedEmail) {
 		if (foundedEmail.trim().isEmpty()) {
-			inboxTableModel.setRowCount(0); 
+			inboxTableModel.setRowCount(0);
 			ArrayList<String> getEmails = fassade.sendAllEmailsToInboxWindow();
-			if (getEmails != null && !getEmails.isEmpty()) 
+			if (getEmails != null && !getEmails.isEmpty())
 				for (String tempEmail : getEmails) {
 					String[] splitEmail = tempEmail.split(",");
 					Object[] newEmail = { splitEmail[0], splitEmail[1], splitEmail[2] };
 					inboxTableModel.addRow(newEmail);
 				}
-		}else {
+		} else {
 			String[] splitEmail = foundedEmail.split(",");
 			Object[] newEmail = { splitEmail[0], splitEmail[1], splitEmail[2] };
 			inboxTableModel.addRow(newEmail);
 		}
-			
-		
-		
+
 	}
 }
 
