@@ -26,39 +26,86 @@ Es wurde im Rahmen meines Studiums entwickelt, um **Objektorientierte Programmie
    ```bash
    javac *.java
 
-## 📐 UML Klassendiagramm
-
-## 📐 UML Design
+## 📐 Architektur & Klassendiagramm
 
 ```mermaid
 classDiagram
+    %% --- GUI PACKAGE ---
+    class Main {
+        +main()
+    }
+
+    class LoginWindow {
+        +show()
+        +loginButton()
+    }
+    class RegisterWindow {
+        +registerUser()
+    }
+    class EasyMailWindow {
+        +showInbox()
+        +openCompose()
+    }
+    class ComposeEmailWindow {
+        +sendEmail()
+    }
+
+    %% --- DOMAIN / LOGIC ---
+    class UserManager {
+        +HashMap users
+        +register(User)
+        +login(String, String)
+        +getCurrentUser() User
+    }
+
     class User {
         +String username
-        +login()
-        +logout()
+        +String password
+        +getEmails()
     }
 
     class Email {
         +String sender
+        +String recipient
         +String subject
         +String content
-        +send()
+        +LocalDateTime date
     }
 
-    class Folder {
-        +addEmail()
-        +removeEmail()
+    %% --- FOLDER STRUCTURE ---
+    class EmailFolder {
+        <<Abstract>>
+        +ArrayList~Email~ emails
+        +addEmail(Email)
+        +removeEmail(Email)
     }
 
     class Inbox
     class SentFolder
     class TrashFolder
 
-    %% Beziehungen
-    User "1" --> "*" Email : verfasst
-    User "1" --> "1" Inbox : besitzt
-    Folder <|-- Inbox : erbt von
-    Folder <|-- SentFolder
-    Folder <|-- TrashFolder
-    Inbox o-- Email : enthält
+    %% --- BEZIEHUNGEN (RELATIONSHIPS) ---
+    
+    %% Startpunkt
+    Main ..> LoginWindow : startet
+
+    %% GUI nutzt Logic
+    LoginWindow ..> UserManager : nutzt
+    RegisterWindow ..> UserManager : nutzt
+    EasyMailWindow ..> User : zeigt Daten von
+    EasyMailWindow ..> ComposeEmailWindow : öffnet
+
+    %% User Struktur
+    UserManager "1" o-- "*" User : verwaltet
+    User "1" *-- "1" Inbox : hat
+    User "1" *-- "1" SentFolder : hat
+    User "1" *-- "1" TrashFolder : hat
+
+    %% Ordner Vererbung (Inheritance)
+    EmailFolder <|-- Inbox
+    EmailFolder <|-- SentFolder
+    EmailFolder <|-- TrashFolder
+
+    %% Ordner Inhalt
+    EmailFolder o-- "*" Email : enthält
 ```
