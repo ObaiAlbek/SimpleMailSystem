@@ -26,3 +26,39 @@ Es wurde im Rahmen meines Studiums entwickelt, um **Objektorientierte Programmie
    ```bash
    javac *.java
 
+## 📐 UML Klassendiagramm
+
+## 📐 UML Design
+
+```mermaid
+classDiagram
+    class User {
+        +String username
+        +login()
+        +logout()
+    }
+
+    class Email {
+        +String sender
+        +String subject
+        +String content
+        +send()
+    }
+
+    class Folder {
+        +addEmail()
+        +removeEmail()
+    }
+
+    class Inbox
+    class SentFolder
+    class TrashFolder
+
+    %% Beziehungen
+    User "1" --> "*" Email : verfasst
+    User "1" --> "1" Inbox : besitzt
+    Folder <|-- Inbox : erbt von
+    Folder <|-- SentFolder
+    Folder <|-- TrashFolder
+    Inbox o-- Email : enthält
+```
